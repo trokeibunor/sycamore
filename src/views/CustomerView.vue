@@ -31,7 +31,6 @@
               class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
             />
           </div>
-
         </div>
         <button
           class="bg-black hover:bg-black/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -82,7 +81,7 @@
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr
-                v-for="customer in customers"
+                v-for="customer in customerService.customers"
                 :key="customer.id"
                 class="hover:bg-gray-50/50 transition-colors"
               >
@@ -91,17 +90,22 @@
                     <div
                       class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"
                     >
-                      {{ customer.firstName.charAt(0) }}
+                      {{ customer.first_name.charAt(0) }}
                     </div>
-                    <div class="font-medium text-gray-900">{{ customer.firstName }}</div>
+                    <div class="font-medium text-gray-900">{{ customer.first_name }}</div>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-gray-900">{{ customer.lastName }}</td>
+                <td class="px-6 py-4 text-gray-900">{{ customer.last_name }}</td>
                 <td class="px-6 py-4 text-gray-500">{{ customer.email }}</td>
-                <td class="px-6 py-4 text-gray-500">{{ customer.phone }}</td>
+                <td class="px-6 py-4 text-gray-500">{{ customer.phone_number }}</td>
                 <td class="px-6 py-4">
-                  <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm">
+                  <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">
                     {{ customer.state }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-3 py-1 rounded-full text-sm" :class="customer.status? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'">
+                    {{ customer.status ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
                 <td class="px-6 py-4">
@@ -142,7 +146,7 @@
                         />
                       </svg>
                     </button>
-                    <button class="p-1 hover:bg-gray-100 rounded" title="Delete">
+                    <button class="p-1 hover:bg-gray-100 rounded" title="Delete" @click="deleteCustomer(customer.id)">
                       <svg
                         class="w-4 h-4 text-red-500"
                         fill="none"
@@ -181,9 +185,11 @@
 </template>
 
 <script setup>
-import CustomerModal from '@/components/CustomerModal.vue';
-import { ref } from 'vue'
+import CustomerModal from '@/components/CustomerModal.vue'
+import { useCustomerStore } from '@/stores/customer'
+import { ref, onMounted } from 'vue'
 const customerModal = ref(null)
+const customerService = useCustomerStore()
 
 const searchQuery = ref('')
 
@@ -193,40 +199,25 @@ const tableHeaders = [
   { key: 'email', label: 'Email', sortable: true },
   { key: 'phone', label: 'Phone Number', sortable: true },
   { key: 'state', label: 'State', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
   { key: 'actions', label: 'Actions', sortable: false },
 ]
 
-const customers = ref([
-  {
-    id: 1,
-    firstName: 'Oluwaseun',
-    lastName: 'Adebayo',
-    email: 'seun.adebayo@example.com',
-    phone: '+234 801 234 5678',
-    state: 'Lagos',
-  },
-  {
-    id: 2,
-    firstName: 'Chioma',
-    lastName: 'Okonkwo',
-    email: 'chioma.o@example.com',
-    phone: '+234 802 345 6789',
-    state: 'Abuja',
-  },
-  {
-    id: 3,
-    firstName: 'Ibrahim',
-    lastName: 'Musa',
-    email: 'ibrahim.m@example.com',
-    phone: '+234 803 456 7890',
-    state: 'Kano',
-  },
-  // Add more customers as needed
-])
+const deleteCustomer = (id) => {
+  if (!confirm(`Are you sure you want to delete customer with ID: ${id}`)) {
+    return
+  } else {
+    customerService.deleteCustomer(id)
+  }
+}
 
+onMounted(async () => {
+  await customerService.fetchCustomers()
+  console.log(customerService.customers)
+})
 const openCustomerModal = () => {
   if (customerModal.value) {
-    customerModal.value.openModal();
+    customerModal.value.openModal()
   }
-};
+}
 </script>

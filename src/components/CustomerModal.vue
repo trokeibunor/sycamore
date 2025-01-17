@@ -38,7 +38,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> First Name </label>
                 <input
-                  v-model="formData.firstName"
+                  v-model="formData.first_name"
                   type="text"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
@@ -48,7 +48,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Last Name </label>
                 <input
-                  v-model="formData.lastName"
+                  v-model="formData.last_name"
                   type="text"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
@@ -72,7 +72,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Phone Number </label>
                 <input
-                  v-model="formData.phone"
+                  v-model="formData.phone_number"
                   type="tel"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
@@ -99,17 +99,17 @@
               <div class="flex items-center space-x-3">
                 <label class="flex items-center space-x-3 cursor-pointer">
                   <div class="relative inline-flex items-center">
-                    <input v-model="formData.isActive" type="checkbox" class="sr-only" />
+                    <input v-model="formData.status" type="checkbox" class="sr-only" />
                     <div
                       :class="[
                         'w-10 h-6 rounded-full transition-colors',
-                        formData.isActive ? 'bg-black' : 'bg-gray-200',
+                        formData.status ? 'bg-black' : 'bg-gray-200',
                       ]"
                     >
                       <div
                         :class="[
                           'w-4 h-4 rounded-full bg-white transform transition-transform',
-                          formData.isActive ? 'translate-x-5' : 'translate-x-1',
+                          formData.status ? 'translate-x-5' : 'translate-x-1',
                         ]"
                         class="mt-1"
                       ></div>
@@ -165,12 +165,14 @@
           >
             Cancel
           </button>
-          <button
+            <button
             @click="handleSubmit"
-            class="px-4 py-2 bg-black text-white rounded-lg hover:bg-black/90 transition-colors"
-          >
+            :disabled="isLoading"
+            class="px-4 py-2 bg-black text-white rounded-lg hover:bg-black/90 transition-colors flex items-center justify-center"
+            >
+            <span v-if="isLoading" class="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-t-transparent border-white mr-2"></span>
             Add Customer
-          </button>
+            </button>
         </div>
       </div>
     </div>
@@ -179,15 +181,18 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { useCustomerStore } from '@/stores/customer';
 
-const isOpen = ref(false)
+const customerService = useCustomerStore();
+const isOpen = ref(false);
+const isLoading = ref(false);
 const formData = reactive({
-  firstName: '',
-  lastName: '',
+  first_name: '',
+  last_name: '',
   email: '',
-  phone: '',
+  phone_number: '',
   state: '',
-  isActive: false,
+  status: true,
   details: '',
 })
 
@@ -239,10 +244,19 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-const handleSubmit = () => {
-  // Handle form submission
-  console.log('Form submitted:', formData)
-  closeModal()
+const handleSubmit = async() => {
+  isLoading.value = true;
+  try {
+    await customerService.createCustomer(formData)
+    Object.keys(formData).forEach(key => {
+      formData[key] = key === 'status' ? true : ''
+    });
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isLoading.value = false;
+    closeModal()
+  }
 }
 
 // Expose necessary methods
