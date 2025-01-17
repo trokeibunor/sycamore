@@ -141,7 +141,7 @@
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-2">
-                    <button class="p-1 hover:bg-gray-100 rounded" title="View">
+                    <button class="p-1 hover:bg-gray-100 rounded" title="View" @click="ViewCustomer(customer.id)">
                       <svg
                         class="w-4 h-4 text-gray-500"
                         fill="none"
@@ -162,7 +162,7 @@
                         />
                       </svg>
                     </button>
-                    <button class="p-1 hover:bg-gray-100 rounded" title="Edit">
+                    <!-- <button class="p-1 hover:bg-gray-100 rounded" title="Edit">
                       <svg
                         class="w-4 h-4 text-gray-500"
                         fill="none"
@@ -176,7 +176,7 @@
                           d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                         />
                       </svg>
-                    </button>
+                    </button> -->
                     <button
                       class="p-1 hover:bg-gray-100 rounded"
                       title="Delete"
@@ -221,15 +221,18 @@
         </div> -->
       </div>
       <CustomerModal ref="customerModal" />
+      <ViewCustomerModal ref="viewCustomer" />
     </div>
   </div>
 </template>
 
 <script setup>
 import CustomerModal from '@/components/CustomerModal.vue'
+import ViewCustomerModal from '@/components/ViewCustomerModal.vue'
 import { useCustomerStore } from '@/stores/customer'
 import { ref, onMounted } from 'vue'
 const customerModal = ref(null)
+const viewCustomer = ref(null)
 const customerService = useCustomerStore()
 const isLoading = ref(false)
 
@@ -256,6 +259,12 @@ const deleteCustomer = (id) => {
     } finally {
       isLoading.value = false
     }
+  }
+}
+const ViewCustomer = (id) => {
+  alert(id)
+  if(viewCustomer.value) {
+    viewCustomer.value.openModal(id)
   }
 }
 
