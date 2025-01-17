@@ -3,7 +3,7 @@
     <div class="w-full flex flex-col gap-8">
       <!-- Header Section -->
       <div class="flex flex-col gap-2">
-        <h3 class="text-2xl font-semibold text-gray-900">Customer's Table</h3>
+        <h3 class="text-2xl font-semibold text-gray-900">Customers</h3>
         <p class="text-gray-500">You can view your customer's data here and make nice changes</p>
       </div>
 
@@ -26,9 +26,10 @@
             </svg>
             <input
               type="text"
-              v-model="searchQuery"
+              v-model="customerService.searchTerm"
               placeholder="Search customers..."
               class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
+              @keyup="customerService.fetchCustomers"
             />
           </div>
         </div>
@@ -199,13 +200,17 @@
                 </td>
               </tr>
 
-              <tr v-if="!isLoading && customerService.customers.length === 0"></tr>
+              <tr v-if="customerService.customers.length === 0">
+                <td colspan="7" class="text-center py-4 text-gray-500">
+                  No customers found
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
 
         <!-- Pagination -->
-        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+        <!-- <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
           <p class="text-sm text-gray-500">Showing 1 to 10 of 50 results</p>
           <div class="flex gap-2">
             <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">
@@ -213,7 +218,7 @@
             </button>
             <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">Next</button>
           </div>
-        </div>
+        </div> -->
       </div>
       <CustomerModal ref="customerModal" />
     </div>
@@ -228,15 +233,14 @@ const customerModal = ref(null)
 const customerService = useCustomerStore()
 const isLoading = ref(false)
 
-const searchQuery = ref('')
 
 const tableHeaders = [
-  { key: 'firstName', label: 'First Name', sortable: true },
-  { key: 'lastName', label: 'Last Name', sortable: true },
-  { key: 'email', label: 'Email', sortable: true },
-  { key: 'phone', label: 'Phone Number', sortable: true },
-  { key: 'state', label: 'State', sortable: true },
-  { key: 'status', label: 'Status', sortable: true },
+  { key: 'firstName', label: 'First Name', sortable: false },
+  { key: 'lastName', label: 'Last Name', sortable: false },
+  { key: 'email', label: 'Email', sortable: false },
+  { key: 'phone', label: 'Phone Number', sortable: false },
+  { key: 'state', label: 'State', sortable: false },
+  { key: 'status', label: 'Status', sortable: false },
   { key: 'actions', label: 'Actions', sortable: false },
 ]
 

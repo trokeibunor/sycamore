@@ -10,7 +10,11 @@
               <p class="text-gray-500">Welcome, Interviewer!</p>
             </div>
             <div class="flex items-center gap-4">
-              <a href="https://okeibunoremma.netlify.app" target="_blank" class="p-2 hover:bg-gray-100 rounded-lg">
+              <a
+                href="https://okeibunoremma.netlify.app"
+                target="_blank"
+                class="p-2 hover:bg-gray-100 rounded-lg"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-5 w-5 text-gray-600"
@@ -37,11 +41,9 @@
     </div>
     <footer class="bg-white shadow-sm px-6 py-4 border-t border-gray-100">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <p class="text-sm text-gray-600">© 2024 Propary. All rights reserved.</p>
+        <p class="text-sm text-gray-600">© 2024 Sycamore Interview.</p>
         <div class="flex items-center gap-4">
-          <a href="#" class="text-sm text-gray-600 hover:text-gray-900">Terms</a>
-          <a href="#" class="text-sm text-gray-600 hover:text-gray-900">Privacy</a>
-          <a href="#" class="text-sm text-gray-600 hover:text-gray-900">Support</a>
+          <p class="text-gray-600 text-sm">Inpiration: Render Dashboard</p>
         </div>
       </div>
     </footer>
@@ -50,7 +52,6 @@
 
 <script setup>
 import Sidebar from '@/components/Sidebar.vue'
-
 </script>
 
 <style scoped>
