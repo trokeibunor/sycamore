@@ -124,7 +124,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1"> Customer Details </label>
               <div class="border border-gray-200 rounded-lg">
-                <QuillEditor theme="snow" />
+                <QuillEditor theme="snow" content-type="html" v-model:content="formData.details" />
               </div>
             </div>
           </form>
