@@ -80,10 +80,35 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
+              <tr v-if="isLoading" class="text-center">
+                <td colspan="7" class="py-4">
+                  <svg
+                    class="animate-spin h-5 w-5 text-gray-500 mx-auto"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </td>
+              </tr>
               <tr
                 v-for="customer in customerService.customers"
                 :key="customer.id"
                 class="hover:bg-gray-50/50 transition-colors"
+                v-else
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
@@ -104,7 +129,12 @@
                   </span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="px-3 py-1 rounded-full text-sm" :class="customer.status? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'">
+                  <span
+                    class="px-3 py-1 rounded-full text-sm"
+                    :class="
+                      customer.status ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                    "
+                  >
                     {{ customer.status ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
@@ -146,7 +176,11 @@
                         />
                       </svg>
                     </button>
-                    <button class="p-1 hover:bg-gray-100 rounded" title="Delete" @click="deleteCustomer(customer.id)">
+                    <button
+                      class="p-1 hover:bg-gray-100 rounded"
+                      title="Delete"
+                      @click="deleteCustomer(customer.id)"
+                    >
                       <svg
                         class="w-4 h-4 text-red-500"
                         fill="none"
@@ -164,6 +198,8 @@
                   </div>
                 </td>
               </tr>
+
+              <tr v-if="!isLoading && customerService.customers.length === 0"></tr>
             </tbody>
           </table>
         </div>
@@ -190,6 +226,7 @@ import { useCustomerStore } from '@/stores/customer'
 import { ref, onMounted } from 'vue'
 const customerModal = ref(null)
 const customerService = useCustomerStore()
+const isLoading = ref(false)
 
 const searchQuery = ref('')
 
@@ -207,13 +244,26 @@ const deleteCustomer = (id) => {
   if (!confirm(`Are you sure you want to delete customer with ID: ${id}`)) {
     return
   } else {
-    customerService.deleteCustomer(id)
+    isLoading.value = true
+    try {
+      customerService.deleteCustomer(id)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      isLoading.value = false
+    }
   }
 }
 
 onMounted(async () => {
-  await customerService.fetchCustomers()
-  console.log(customerService.customers)
+  isLoading.value = true
+  try {
+    await customerService.fetchCustomers()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isLoading.value = false
+  }
 })
 const openCustomerModal = () => {
   if (customerModal.value) {
