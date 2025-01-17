@@ -124,34 +124,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1"> Customer Details </label>
               <div class="border border-gray-200 rounded-lg">
-                <div class="border-b border-gray-200 p-2 bg-gray-50 flex gap-2">
-                  <button
-                    v-for="format in ['bold', 'italic', 'underline']"
-                    :key="format"
-                    type="button"
-                    class="p-1 hover:bg-gray-100 rounded"
-                  >
-                    <svg
-                      class="w-4 h-4 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="{2}"
-                        d="M4 6h16M4 12h16m-7 6h7"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <textarea
-                  v-model="formData.details"
-                  rows="4"
-                  class="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
-                  placeholder="Enter customer details..."
-                ></textarea>
+                <QuillEditor theme="snow" />
               </div>
             </div>
           </form>

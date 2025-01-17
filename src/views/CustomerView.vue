@@ -200,7 +200,7 @@
                 </td>
               </tr>
 
-              <tr v-if="customerService.customers.length === 0">
+              <tr v-if="!isLoading && customerService.customers.length === 0">
                 <td colspan="7" class="text-center py-4 text-gray-500">
                   No customers found
                 </td>

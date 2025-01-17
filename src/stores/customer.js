@@ -10,7 +10,7 @@ import {
   query,
   where,
 } from 'firebase/firestore'
-import db from '@/firebase';
+import db from '@/firebase'
 
 export const useCustomerStore = defineStore('customers', () => {
   const customers = ref([])
@@ -28,30 +28,54 @@ export const useCustomerStore = defineStore('customers', () => {
   //     console.error('Error fetching customers:', error)
   //   }
   // }
-    const fetchCustomers = async () => {
-      console.log('fetching customers')
-      console.log(searchTerm.value)
-      try {
-        let q = query(collection(db, 'customers'))
-        if (searchTerm.value) {
-          q = query(
-            q,
-            where('name', '==', searchTerm.value),
-            where('email', '==', searchTerm.value),
-            where('status', '==', searchTerm.value),
-            where('phone_number', '==', searchTerm.value),
-          )
-        }
+  const fetchCustomers = async () => {
+    try {
+      let q = query(collection(db, 'customers'))
+      if (searchTerm.value) {
+        q = query(collection(db, 'customers'), where('name', '==', searchTerm.value))
+        const emailQuery = query(
+          collection(db, 'customers'),
+          where('email', '==', searchTerm.value),
+        )
+        const statusQuery = query(
+          collection(db, 'customers'),
+          where('status', '==', searchTerm.value),
+        )
+        const phoneQuery = query(
+          collection(db, 'customers'),
+          where('phone_number', '==', searchTerm.value),
+        )
+        const [nameSnapshot, emailSnapshot, statusSnapshot, phoneSnapshot] = await Promise.all([
+          getDocs(q),
+          getDocs(emailQuery),
+          getDocs(statusQuery),
+          getDocs(phoneQuery),
+        ])
+        const allDocs = [
+          ...nameSnapshot.docs,
+          ...emailSnapshot.docs,
+          ...statusSnapshot.docs,
+          ...phoneSnapshot.docs,
+        ]
+        const uniqueDocs = Array.from(new Set(allDocs.map((doc) => doc.id))).map((id) =>
+          allDocs.find((doc) => doc.id === id),
+        )
+        customers.value = uniqueDocs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+      } else {
         const querySnapshot = await getDocs(q)
         customers.value = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }))
-        console.log(customers.value);
-      } catch (error) {
-        console.error('Error fetching customers:', error)
       }
+      console.log(customers.value)
+    } catch (error) {
+      console.error('Error fetching customers:', error)
     }
+  }
 
   // Create a new customer
   const createCustomer = async (newCustomer) => {
