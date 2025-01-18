@@ -168,7 +168,7 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="flex items-center justify-end gap-4 pb-8 sm:p-6 border-t border-gray-100">
+        <div class="flex items-center justify-end gap-4 pb-8 px-6 pt-4 sm:p-6 border-t border-gray-100">
           <button
             @click="closeModal"
             class="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
