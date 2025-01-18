@@ -16,8 +16,6 @@ export const useCustomerStore = defineStore('customers', () => {
 
   const fetchCustomers = async () => {
     try {
-      console.log('Fetching customers...')
-      console.log('Search term:', searchTerm.value)
 
       const allDocs = []
 
@@ -47,9 +45,9 @@ export const useCustomerStore = defineStore('customers', () => {
               typeof doc.last_name === 'string' &&
               doc.last_name.toLowerCase().includes(lowerSearchTerm)) ||
             (doc.phone_number && doc.phone_number.includes(lowerSearchTerm)) || // Phone numbers are numeric
-            (doc.status &&
-              typeof doc.status === 'string' &&
-              doc.status.toLowerCase().includes(lowerSearchTerm))
+            (doc.state &&
+              typeof doc.state === 'string' &&
+              doc.state.toLowerCase().includes(lowerSearchTerm))
           )
         })
       } else {
