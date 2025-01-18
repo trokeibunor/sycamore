@@ -1,6 +1,13 @@
 <template>
   <div
-    :class="['sidebar', { collapsed: isCollapsed }]"
+    :class="[
+      'sidebar',
+      {
+        collapsed: isCollapsed,
+        mobile: isMobile,
+        hidden: isMobile && isCollapsed,
+      },
+    ]"
     class="bg-white shadow-lg border-r border-gray-100 h-full min-h-screen transition-all duration-300"
   >
     <div class="p-4 border-b border-gray-100">
@@ -10,47 +17,11 @@
           alt="Logo"
           class="h-12 w-12 object-cover rounded-full"
         />
-        <span v-if="!isCollapsed" class="font-semibold text-gray-800">SYCAMORE</span>
+        <span v-if="!isCollapsed || isMobile" class="font-semibold text-gray-800">SYCAMORE</span>
       </div>
     </div>
 
     <div class="p-4">
-      <button
-        @click="toggleSidebar"
-        class="mb-6 p-2 hover:bg-gray-100 rounded-lg w-full flex items-center justify-center"
-      >
-        <svg
-          v-if="isCollapsed"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16m-7 6h7"
-          />
-        </svg>
-        <svg
-          v-else
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-
       <ul class="space-y-2">
         <li>
           <router-link
@@ -73,7 +44,7 @@
                 fill="currentColor"
               />
             </svg>
-            <span v-if="!isCollapsed" class="font-medium">Dashboard</span>
+            <span v-if="!isCollapsed || isMobile" class="font-medium">Dashboard</span>
           </router-link>
         </li>
         <li>
@@ -97,7 +68,7 @@
                 fill="currentColor"
               />
             </svg>
-            <span v-if="!isCollapsed" class="font-medium">Customers</span>
+            <span v-if="!isCollapsed || isMobile" class="font-medium">Customers</span>
           </router-link>
         </li>
       </ul>
@@ -106,42 +77,52 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-const isMobile = ref(false)
-const isCollapsed = ref(false)
+defineProps({
+  isCollapsed: {
+    type: Boolean,
+    required: true,
+  },
+  isMobile: {
+    type: Boolean,
+    required: true,
+  },
+})
+
 const route = useRoute()
-
-function checkMobile() {
-  isMobile.value = window.innerWidth <= 768
-}
-
-function toggleSidebar() {
-  isCollapsed.value = !isCollapsed.value
-}
 
 function isActive(path) {
   return route.path === path
 }
-
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile)
-})
 </script>
 
 <style scoped>
 .sidebar {
   width: 280px;
   transition: all 0.3s ease;
+  position: relative;
 }
-.sidebar.collapsed {
+
+.sidebar.collapsed:not(.mobile) {
   width: 80px;
+}
+
+/* Mobile styles */
+.sidebar.mobile {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 80%;
+  transform: translateX(0);
+}
+
+.sidebar.mobile.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar.hidden {
+  display: none;
 }
 </style>
