@@ -8,10 +8,18 @@
     ></div>
 
     <!-- Modal Content -->
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end justify-center sm:p-6 h-screen sm:h-[80vh] overflow-y-auto">
-      <div class="w-full lg:max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-y-auto max-h-[80vh]" @click.stop>
+    <div
+      v-if="isOpen"
+      class="fixed inset-0 z-50 flex items-end justify-center sm:p-6 h-screen sm:h-[80vh] overflow-y-auto"
+    >
+      <div
+        class="w-full lg:max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-y-auto max-h-[80vh]"
+        @click.stop
+      >
         <!-- Modal Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white">
+        <div
+          class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white"
+        >
           <h3 class="text-lg font-semibold text-gray-900">Add New Customer</h3>
           <button @click="closeModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <svg
@@ -40,20 +48,28 @@
                 <input
                   v-model="formData.first_name"
                   type="text"
+                  @blur="validateFirstName"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
                   placeholder="Enter first name"
                 />
+                <span v-if="errors.first_name?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.first_name[0] }}
+                </span>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Last Name </label>
                 <input
                   v-model="formData.last_name"
                   type="text"
+                  @blur="validateLastName"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
                   placeholder="Enter last name"
                 />
+                <span v-if="errors.last_name?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.last_name[0] }}
+                </span>
               </div>
             </div>
 
@@ -64,20 +80,28 @@
                 <input
                   v-model="formData.email"
                   type="email"
+                  @blur="validateEmail"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
                   placeholder="Enter email address"
                 />
+                <span v-if="errors.email?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.email[0] }}
+                </span>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Phone Number </label>
                 <input
                   v-model="formData.phone_number"
                   type="tel"
+                  @blur="validatePhoneNumber"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
                   placeholder="+234"
                 />
+                <span v-if="errors.phone_number?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.phone_number[0] }}
+                </span>
               </div>
             </div>
 
@@ -87,6 +111,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1"> State </label>
                 <select
                   v-model="formData.state"
+                  @blur="validateState"
                   required
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all"
                 >
@@ -95,6 +120,9 @@
                     {{ state }}
                   </option>
                 </select>
+                <span v-if="errors.state?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.first_name[0] }}
+                </span>
               </div>
               <div class="flex items-center space-x-3">
                 <label class="flex items-center space-x-3 cursor-pointer">
@@ -158,6 +186,9 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useCustomerStore } from '@/stores/customer'
+import { useValidator } from '../composables/useValidator'
+
+const { errors, validateField } = useValidator()
 
 const customerService = useCustomerStore()
 const isOpen = ref(false)
@@ -172,6 +203,40 @@ const formData = reactive({
   details: '',
 })
 
+const validateEmail = () => {
+  validateField('email', formData.email, {
+    required: true,
+    email: true,
+  })
+}
+
+const validateFirstName = () => {
+  validateField('first_name', formData.first_name, {
+    required: true,
+    minLength: 2,
+  })
+}
+
+const validateLastName = () => {
+  validateField('last_name', formData.last_name, {
+    required: true,
+    minLength: 2,
+  })
+}
+
+const validatePhoneNumber = () => {
+  validateField('phone_number', formData.phone_number, {
+    required: true,
+    mobile: true,
+    minLength: 10,
+  })
+}
+
+const validateState = () => {
+  validateField('state', formData.state, {
+    required: true,
+  })
+}
 const nigerianStates = [
   'Abia',
   'Adamawa',

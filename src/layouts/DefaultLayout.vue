@@ -73,7 +73,7 @@
           </div>
         </header>
 
-        <main class=" p-4 sm:p-6">
+        <main class="p-4 sm:p-6">
           <div class="max-w-7xl mx-auto">
             <transition name="fade" mode="out-in">
               <slot />
@@ -84,7 +84,7 @@
     </div>
     <footer class="bg-white shadow-sm px-6 py-4 border-t border-gray-100">
       <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
-        <p class="text-sm text-gray-600">© 2024 Sycamore Interview.</p>
+        <p class="text-sm text-gray-600">© 2025 Sycamore Interview.</p>
         <div class="flex items-center gap-4">
           <p class="text-gray-600 text-sm">Inpiration: Render Dashboard</p>
         </div>
