@@ -8,13 +8,9 @@
         @click="toggleSidebar"
       ></div>
 
-      <SideBar
-        :is-collapsed="isSidebarCollapsed"
-        :is-mobile="isMobile"
-        class="z-30"
-      />
+      <SideBar :is-collapsed="isSidebarCollapsed" :is-mobile="isMobile" class="z-30" />
       <div class="flex-1 flex flex-col">
-        <header class="bg-white shadow-sm px-6 py-4 sticky top-0 z-10">
+        <header class="bg-white shadow-sm sm:px-6 px-4 py-4 sticky top-0 z-10">
           <div class="flex justify-between items-center max-w-7xl mx-auto">
             <div class="flex items-center gap-4">
               <button
@@ -46,10 +42,10 @@
                   stroke="currentColor"
                 >
                   <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
                   />
                 </svg>
               </button>
@@ -77,7 +73,7 @@
           </div>
         </header>
 
-        <main class="flex-grow p-6">
+        <main class=" p-4 sm:p-6">
           <div class="max-w-7xl mx-auto">
             <transition name="fade" mode="out-in">
               <slot />
