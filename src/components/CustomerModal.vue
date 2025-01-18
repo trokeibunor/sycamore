@@ -286,6 +286,26 @@ const closeModal = () => {
 }
 
 const handleSubmit = async () => {
+  const isValid = await validateField('first_name', formData.first_name, {
+    required: true,
+    minLength: 2,
+  }) && await validateField('last_name', formData.last_name, {
+    required: true,
+    minLength: 2,
+  }) && await validateField('email', formData.email, {
+    required: true,
+    email: true,
+  }) && await validateField('phone_number', formData.phone_number, {
+    required: true,
+    mobile: true,
+    minLength: 10,
+  }) && await validateField('state', formData.state, {
+    required: true,
+  })
+
+  if (!isValid) {
+    return
+  }
   isLoading.value = true
   try {
     await customerService.createCustomer(formData)

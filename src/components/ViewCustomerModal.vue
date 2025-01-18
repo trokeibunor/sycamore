@@ -44,8 +44,12 @@
                   type="text"
                   required
                   :disabled="!isEditing"
+                  @blur="validateFirstName"
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all disabled:bg-gray-50"
                 />
+                <span v-if="errors.first_name?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.first_name[0] }}
+                </span>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Last Name </label>
@@ -54,8 +58,12 @@
                   type="text"
                   required
                   :disabled="!isEditing"
+                  @blur="validateLastName"
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all disabled:bg-gray-50"
                 />
+                <span v-if="errors.last_name?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.last_name[0] }}
+                </span>
               </div>
             </div>
 
@@ -68,8 +76,12 @@
                   type="email"
                   required
                   :disabled="!isEditing"
+                  @blur="validateEmail"
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all disabled:bg-gray-50"
                 />
+                <span v-if="errors.email?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.email[0] }}
+                </span>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"> Phone Number </label>
@@ -78,8 +90,12 @@
                   type="tel"
                   required
                   :disabled="!isEditing"
+                  @blur="validatePhoneNumber"
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all disabled:bg-gray-50"
                 />
+                <span v-if="errors.phone_number?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.phone_number[0] }}
+                </span>
               </div>
             </div>
 
@@ -91,6 +107,7 @@
                   v-model="formData.state"
                   required
                   :disabled="!isEditing"
+                  @blur="validateState"
                   class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 transition-all disabled:bg-gray-50"
                 >
                   <option value="">Select a state</option>
@@ -98,6 +115,9 @@
                     {{ state }}
                   </option>
                 </select>
+                <span v-if="errors.state?.length" class="text-red-500 text-sm mt-1">
+                  {{ errors.state[0] }}
+                </span>
               </div>
               <div class="flex items-center space-x-3">
                 <label class="flex items-center space-x-3" :class="{ 'cursor-pointer': isEditing }">
@@ -180,7 +200,9 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useCustomerStore } from '@/stores/customer'
+import { useValidator } from '@/composables/useValidator'
 
+const { errors, validateField } = useValidator()
 
 const customerStore = useCustomerStore();
 const customer_id = ref('')
@@ -196,6 +218,41 @@ const formData = reactive({
   status: true,
   details: '',
 })
+
+const validateEmail = () => {
+  validateField('email', formData.email, {
+    required: true,
+    email: true,
+  })
+}
+
+const validateFirstName = () => {
+  validateField('first_name', formData.first_name, {
+    required: true,
+    minLength: 2,
+  })
+}
+
+const validateLastName = () => {
+  validateField('last_name', formData.last_name, {
+    required: true,
+    minLength: 2,
+  })
+}
+
+const validatePhoneNumber = () => {
+  validateField('phone_number', formData.phone_number, {
+    required: true,
+    mobile: true,
+    minLength: 10,
+  })
+}
+
+const validateState = () => {
+  validateField('state', formData.state, {
+    required: true,
+  })
+}
 
 const nigerianStates = [
   'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue',
@@ -222,7 +279,6 @@ const toggleEdit = () => {
 }
 
 const loadCustomerData = (id) => {
-
   try {
     const customerData = customerStore.customers.find(customer => customer.id === id)
     Object.assign(formData, customerData)
@@ -234,11 +290,31 @@ const loadCustomerData = (id) => {
 }
 
 const handleSubmit = async () => {
+  const isValid = await validateField('first_name', formData.first_name, {
+    required: true,
+    minLength: 2,
+  }) && await validateField('last_name', formData.last_name, {
+    required: true,
+    minLength: 2,
+  }) && await validateField('email', formData.email, {
+    required: true,
+    email: true,
+  }) && await validateField('phone_number', formData.phone_number, {
+    required: true,
+    mobile: true,
+    minLength: 10,
+  }) && await validateField('state', formData.state, {
+    required: true,
+  })
+
+  if (!isValid) {
+    return
+  }
   if (!isEditing.value) return
 
   isLoading.value = true
   try {
-    await customerStore.updateCustomer( customer_id.value, formData)
+    await customerStore.updateCustomer(customer_id.value, formData)
     isEditing.value = false
   } catch (error) {
     console.error('Error updating customer:', error)
