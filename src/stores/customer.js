@@ -7,8 +7,6 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  query,
-  where,
 } from 'firebase/firestore'
 import db from '@/firebase'
 
@@ -16,62 +14,49 @@ export const useCustomerStore = defineStore('customers', () => {
   const customers = ref([])
   const searchTerm = ref('')
 
-  // Fetch customers from Firestore
-  // const fetchCustomers = async () => {
-  //   try {
-  //     const querySnapshot = await getDocs(collection(db, 'customers'))
-  //     customers.value = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }))
-  //   } catch (error) {
-  //     console.error('Error fetching customers:', error)
-  //   }
-  // }
   const fetchCustomers = async () => {
     try {
-      let q = query(collection(db, 'customers'))
+      console.log('Fetching customers...')
+      console.log('Search term:', searchTerm.value)
+
+      const allDocs = []
+
+      // Fetch all customers
+      const querySnapshot = await getDocs(collection(db, 'customers'))
+      querySnapshot.forEach((doc) => {
+        allDocs.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+
       if (searchTerm.value) {
-        q = query(collection(db, 'customers'), where('name', '==', searchTerm.value))
-        const emailQuery = query(
-          collection(db, 'customers'),
-          where('email', '==', searchTerm.value),
-        )
-        const statusQuery = query(
-          collection(db, 'customers'),
-          where('status', '==', searchTerm.value),
-        )
-        const phoneQuery = query(
-          collection(db, 'customers'),
-          where('phone_number', '==', searchTerm.value),
-        )
-        const [nameSnapshot, emailSnapshot, statusSnapshot, phoneSnapshot] = await Promise.all([
-          getDocs(q),
-          getDocs(emailQuery),
-          getDocs(statusQuery),
-          getDocs(phoneQuery),
-        ])
-        const allDocs = [
-          ...nameSnapshot.docs,
-          ...emailSnapshot.docs,
-          ...statusSnapshot.docs,
-          ...phoneSnapshot.docs,
-        ]
-        const uniqueDocs = Array.from(new Set(allDocs.map((doc) => doc.id))).map((id) =>
-          allDocs.find((doc) => doc.id === id),
-        )
-        customers.value = uniqueDocs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
+        console.log('Filtering customers for similar matches...')
+        const lowerSearchTerm = searchTerm.value.toLowerCase()
+
+        // Filter documents for similar matches in specified fields
+        customers.value = allDocs.filter((doc) => {
+          return (
+            (doc.email &&
+              typeof doc.email === 'string' &&
+              doc.email.toLowerCase().includes(lowerSearchTerm)) ||
+            (doc.first_name &&
+              typeof doc.first_name === 'string' &&
+              doc.first_name.toLowerCase().includes(lowerSearchTerm)) ||
+            (doc.last_name &&
+              typeof doc.last_name === 'string' &&
+              doc.last_name.toLowerCase().includes(lowerSearchTerm)) ||
+            (doc.phone_number && doc.phone_number.includes(lowerSearchTerm)) || // Phone numbers are numeric
+            (doc.status &&
+              typeof doc.status === 'string' &&
+              doc.status.toLowerCase().includes(lowerSearchTerm))
+          )
+        })
       } else {
-        const querySnapshot = await getDocs(q)
-        customers.value = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
+        customers.value = allDocs // No search term, return all documents
       }
-      console.log(customers.value)
+
+      console.log('Customers fetched successfully:', customers.value)
     } catch (error) {
       console.error('Error fetching customers:', error)
     }
