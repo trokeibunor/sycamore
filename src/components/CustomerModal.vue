@@ -9,7 +9,7 @@
 
     <!-- Modal Content -->
     <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end justify-center sm:p-6 h-screen sm:h-[80vh] overflow-y-auto">
-      <div class="w-full lg:max-w-2xl bg-white rounded-t-2xl sm:ounded-2xl shadow-xl overflow-y-auto max-h-[80vh]" @click.stop>
+      <div class="w-full lg:max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-y-auto max-h-[80vh]" @click.stop>
         <!-- Modal Header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white">
           <h3 class="text-lg font-semibold text-gray-900">Add New Customer</h3>
