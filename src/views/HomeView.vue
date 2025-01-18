@@ -12,7 +12,12 @@
             >Go to Customer Page</router-link
           >
           <p>or</p>
-          <a class="text-blue-500 text-sm" href="http://">Check out the Codily Test</a>
+          <a
+            class="text-blue-500 text-sm"
+            href="https://github.com/trokeibunor/depth-first-search-binary-tree-sycamore/blob/main/sycamore_js_test.js"
+            target="_blank"
+            >Check out the Codily Test</a
+          >
         </div>
       </div>
     </div>
