@@ -123,7 +123,7 @@
                         class="mt-1"
                       ></div>
                     </div>
-                    <span class="ml-2 text-sm font-medium text-gray-700">Active status</span>
+                    <span class="ml-2 text-sm font-medium text-gray-700">{{formData.status ? 'Active' :'Inactive'}}</span>
                   </div>
                 </label>
               </div>
@@ -131,7 +131,7 @@
 
             <!-- Rich Text Editor -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"> Customer Details </label>
+              <!-- <label class="block text-sm font-medium text-gray-700 mb-1"> Customer Details </label> -->
               <div class="flex flex-col gap-4" v-if="!isEditing">
                 <div v-html="formData.details"></div>
               </div>

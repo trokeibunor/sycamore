@@ -138,14 +138,17 @@
           >
             Cancel
           </button>
-            <button
+          <button
             @click="handleSubmit"
             :disabled="isLoading"
             class="px-4 py-2 bg-black text-white rounded-lg hover:bg-black/90 transition-colors flex items-center justify-center"
-            >
-            <span v-if="isLoading" class="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-t-transparent border-white mr-2"></span>
+          >
+            <span
+              v-if="isLoading"
+              class="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-t-transparent border-white mr-2"
+            ></span>
             Add Customer
-            </button>
+          </button>
         </div>
       </div>
     </div>
@@ -154,11 +157,11 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useCustomerStore } from '@/stores/customer';
+import { useCustomerStore } from '@/stores/customer'
 
-const customerService = useCustomerStore();
-const isOpen = ref(false);
-const isLoading = ref(false);
+const customerService = useCustomerStore()
+const isOpen = ref(false)
+const isLoading = ref(false)
 const formData = reactive({
   first_name: '',
   last_name: '',
@@ -217,17 +220,17 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-const handleSubmit = async() => {
-  isLoading.value = true;
+const handleSubmit = async () => {
+  isLoading.value = true
   try {
     await customerService.createCustomer(formData)
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       formData[key] = key === 'status' ? true : ''
-    });
+    })
   } catch (error) {
     console.error(error)
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
     closeModal()
   }
 }

@@ -262,7 +262,6 @@ const deleteCustomer = (id) => {
   }
 }
 const ViewCustomer = (id) => {
-  alert(id)
   if(viewCustomer.value) {
     viewCustomer.value.openModal(id)
   }
