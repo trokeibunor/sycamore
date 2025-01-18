@@ -160,7 +160,7 @@
 
         <!-- Modal Footer -->
         <div
-          class="flex items-center justify-end gap-4 x-6 pt-4 pb-8 sm:p-6 border-t border-gray-100"
+          class="flex items-center justify-end gap-4 px-6 pt-4 pb-8 sm:p-6 border-t border-gray-100"
         >
           <button
             @click="closeModal"
