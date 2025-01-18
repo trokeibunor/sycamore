@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 w-full">
+  <div class="w-full">
     <div class="w-full flex flex-col gap-8">
       <!-- Header Section -->
       <div class="flex flex-col gap-2">

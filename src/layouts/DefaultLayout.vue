@@ -9,8 +9,8 @@
       ></div>
 
       <SideBar :is-collapsed="isSidebarCollapsed" :is-mobile="isMobile" class="z-30" />
-      <div class="flex-1 flex flex-col">
-        <header class="bg-white shadow-sm sm:px-6 px-4 py-4 sticky top-0 z-10">
+      <div class="flex-1 flex flex-col w-full">
+        <header class="bg-white shadow-sm sm:px-6 px-4 py-4 sticky top-0 z-10 w-full">
           <div class="flex justify-between items-center max-w-7xl mx-auto">
             <div class="flex items-center gap-4">
               <button
