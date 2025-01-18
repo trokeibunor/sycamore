@@ -1,4 +1,3 @@
-// src/composables/useValidator.js
 import { ref } from 'vue'
 
 export function useValidator() {
